@@ -1,0 +1,49 @@
+# Bounded Path Context — default experiment config
+
+llm:
+  backend: vllm                          # vllm | deepseek
+  model: QuantTrio/Qwen3.5-9B-AWQ        # local primary for 2x 2080 Ti
+  tensor_parallel_size: 2                # CUDA 0,1 on 2x 2080 Ti
+  dtype: float16
+  max_tokens: 1024
+  temperature: 0.0
+  seed: 42
+
+deepseek:
+  api_base: https://api.deepseek.com
+  model: deepseek-chat
+  # API key in configs/secrets.yaml (gitignored)
+
+data:
+  webqsp:
+    path: data/webqsp
+    split: test
+    dev_subset_size: 200
+  cwq:
+    path: data/cwq
+    split: test
+    dev_subset_size: 200
+
+# Core knob of this project — K-step bounded path context
+path_memory:
+  K: 3
+  mode: fixed                            # fixed | adaptive
+  format: structured_triples             # structured_triples | flat_text
+
+# Day 3-6 diagnostic experiment
+truncation:
+  K_values: [1, 2, 3, 5, 8, -1]          # -1 = full path (no truncation)
+  frameworks: [tog, rog]
+  backbones: [qwen3.5-9b, deepseek-chat]
+
+# Day 9-10 adaptive K
+adaptive_K:
+  classifier: logistic                   # logistic | small_mlp
+  features: query_embedding              # query_embedding | grade_label
+  K_choices: [1, 2, 3, 5]
+  use_grade_labels: true
+
+experiment:
+  output_dir: results/
+  log_every: 50
+  save_intermediate: true
