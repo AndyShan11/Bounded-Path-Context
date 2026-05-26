@@ -34,18 +34,26 @@ FILES = {
     # --- 9B Controls ---
     ("9B", "WebQSP", "CoT"):      RES / "rev_p0" / "cot_webqsp_n999999_d5_s42_K0.jsonl",
     ("9B", "WebQSP", "Random"):   RES / "rev_cuda01_random_9b" / "random_webqsp_n999999_d5_s42_K0.jsonl",
+    ("9B", "WebQSP", "ToG"):      RES / "rev_tog_9b" / "tog_webqsp_n999999_d5_s42_K0.jsonl",
     ("9B", "CWQ",    "CoT"):      RES / "rev_p0" / "cot_cwq_n999999_d5_s42_K0.jsonl",
     ("9B", "CWQ",    "Random"):   RES / "rev_cuda01_random_9b" / "random_cwq_n999999_d5_s42_K0.jsonl",
+    ("9B", "CWQ",    "ToG"):      RES / "rev_tog_9b" / "tog_cwq_n999999_d5_s42_K0.jsonl",
     # --- 4B BPC ---
     ("4B", "WebQSP", "BPC/0"):    RES / "qwen35_4b_awq_bpc_k0_full_cuda3"  / "bpc_webqsp_n999999_d5_s42_K0.jsonl",
     ("4B", "WebQSP", "BPC/1"):    RES / "rev_p0" / "bpc_webqsp_n999999_d5_s42_K1.jsonl",
+    ("4B", "WebQSP", "BPC/2"):    RES / "rev_4b_k2_cuda0" / "bpc_webqsp_n999999_d5_s42_K2.jsonl",
     ("4B", "WebQSP", "BPC/full"): RES / "qwen35_4b_awq_bpc_kfull_webqsp_cuda0" / "bpc_webqsp_n999999_d5_s42_Kfull.jsonl",
     ("4B", "CWQ",    "BPC/0"):    RES / "qwen35_4b_awq_bpc_k0_full_cuda3"  / "bpc_cwq_n999999_d5_s42_K0.jsonl",
     ("4B", "CWQ",    "BPC/1"):    RES / "rev_p0" / "bpc_cwq_n999999_d5_s42_K1.jsonl",
+    ("4B", "CWQ",    "BPC/2"):    RES / "rev_4b_k2_cuda0" / "bpc_cwq_n999999_d5_s42_K2.jsonl",
     ("4B", "CWQ",    "BPC/full"): RES / "qwen35_4b_awq_bpc_kfull_cwq_cuda1" / "bpc_cwq_n999999_d5_s42_Kfull.jsonl",
     # --- 4B Controls ---
+    ("4B", "WebQSP", "CoT"):      RES / "rev_4b_cot_tog_cuda1" / "cot_webqsp_n999999_d5_s42_K0.jsonl",
     ("4B", "WebQSP", "Random"):   RES / "qwen35_4b_awq_random_cuda3" / "random_webqsp_n999999_d5_s42_K0.jsonl",
+    ("4B", "WebQSP", "ToG"):      RES / "rev_4b_cot_tog_cuda1" / "tog_webqsp_n999999_d5_s42_K0.jsonl",
+    ("4B", "CWQ",    "CoT"):      RES / "rev_4b_cot_tog_cuda1" / "cot_cwq_n999999_d5_s42_K0.jsonl",
     ("4B", "CWQ",    "Random"):   RES / "qwen35_4b_awq_random_cuda3" / "random_cwq_n999999_d5_s42_K0.jsonl",
+    ("4B", "CWQ",    "ToG"):      RES / "rev_4b_cot_tog_cuda1" / "tog_cwq_n999999_d5_s42_K0.jsonl",
 }
 
 # Cost data from paper manifest (input tokens in millions)
@@ -62,14 +70,22 @@ COST = {
     ("9B", "CWQ",    "BPC/full"): 41.74,
     ("9B", "CWQ",    "CoT"):       0.23,
     ("9B", "CWQ",    "Random"):    2.52,
+    ("9B", "WebQSP", "ToG"):       5.84,
+    ("9B", "CWQ",    "ToG"):      28.95,
     ("4B", "WebQSP", "BPC/0"):    12.94,
     ("4B", "WebQSP", "BPC/1"):    11.45,
+    ("4B", "WebQSP", "BPC/2"):    11.59,
     ("4B", "WebQSP", "BPC/full"): 12.08,
+    ("4B", "WebQSP", "CoT"):       0.09,
     ("4B", "WebQSP", "Random"):    1.18,
+    ("4B", "WebQSP", "ToG"):       9.50,
     ("4B", "CWQ",    "BPC/0"):    33.39,
     ("4B", "CWQ",    "BPC/1"):    31.58,
+    ("4B", "CWQ",    "BPC/2"):    29.32,
     ("4B", "CWQ",    "BPC/full"): 17.32,
+    ("4B", "CWQ",    "CoT"):       0.23,
     ("4B", "CWQ",    "Random"):    2.52,
+    ("4B", "CWQ",    "ToG"):      44.67,
 }
 
 # ---------------------------------------------------------------------------
@@ -179,10 +195,12 @@ COLORS = {
     "BPC/full": "#F76C5E",
     "CoT":    "#F5A623",
     "Random": "#8B8B8B",
+    "ToG":    "#6A0DAD",
 }
 MARKERS = {
     "BPC/0": "o", "BPC/1": "s", "BPC/2": "D",
     "BPC/full": "^", "CoT": "X", "Random": "v",
+    "ToG": "P",
 }
 
 K_ORDER = ["BPC/0", "BPC/1", "BPC/2", "BPC/full"]
@@ -252,7 +270,7 @@ plt.close(fig)
 # ====== Figure 2: Accuracy-cost tradeoff (9B) ======
 fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.8), sharey=False)
 
-all_methods_9b = ["BPC/0", "BPC/1", "BPC/2", "BPC/full", "CoT", "Random"]
+all_methods_9b = ["BPC/0", "BPC/1", "BPC/2", "BPC/full", "CoT", "Random", "ToG"]
 
 for ax_i, dataset in enumerate(["WebQSP", "CWQ"]):
     ax = axes[ax_i]
@@ -279,6 +297,8 @@ for ax_i, dataset in enumerate(["WebQSP", "CWQ"]):
         if method == "CoT":
             offset_x, offset_y = 5, -8
         elif method == "Random":
+            offset_x, offset_y = 5, -8
+        elif method == "ToG":
             offset_x, offset_y = 5, -8
         ax.annotate(label_text,
                     xy=(cost, mu), xytext=(offset_x, offset_y),
@@ -321,13 +341,13 @@ for ax_i, dataset in enumerate(["WebQSP", "CWQ"]):
         ("9B", "CoT",    "9B CoT",              "#F5A623"),
         ("9B", "Random", "9B\nRandom",           "#8B8B8B"),
         ("4B", "BPC/0",  "4B BPC\n$K{=}0$",   "#2176AE"),
+        ("4B", "CoT",    "4B CoT",              "#F5A623"),
         ("4B", "Random", "4B\nRandom",           "#8B8B8B"),
     ]
 
     for model, method, lbl, col in configs:
         key = (model, dataset, method)
         if key not in ci_results:
-            # CoT only at 9B
             continue
         mu, lo, hi = ci_results[key]["f1"]
         groups.append(mu)
@@ -359,11 +379,13 @@ for ax_i, dataset in enumerate(["WebQSP", "CWQ"]):
     ax.set_ylim(0, max(groups) * 1.25)
 
     # Separator between 9B and 4B groups
-    sep_x = 2.5
+    n_9b = sum(1 for m, meth, _, _ in configs if m == "9B" and (m, dataset, meth) in ci_results)
+    sep_x = n_9b - 0.5
     ax.axvline(sep_x, color="gray", linestyle=":", linewidth=0.8)
-    ax.text(1.0, max(groups) * 1.18, "9B", ha="center",
+    ax.text((n_9b - 1) / 2, max(groups) * 1.18, "9B", ha="center",
             fontsize=8, color="gray", fontstyle="italic")
-    ax.text(3.5, max(groups) * 1.18, "4B", ha="center",
+    n_4b = len(groups) - n_9b
+    ax.text(n_9b + (n_4b - 1) / 2, max(groups) * 1.18, "4B", ha="center",
             fontsize=8, color="gray", fontstyle="italic")
 
 fig.tight_layout(w_pad=2.0)
